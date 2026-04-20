@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会員QRコード</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%); padding: 20px; }
+    .card { background: #fff; padding: 32px 24px; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); text-align: center; max-width: 360px; width: 100%; }
+    h1 { font-size: 18px; margin: 0 0 8px; color: #1a1a1a; font-weight: 600; }
+    .subtitle { font-size: 13px; color: #888; margin: 0 0 24px; }
+    #qr-code { display: flex; justify-content: center; margin: 16px 0; }
+    .uid-label { font-size: 13px; color: #666; margin-top: 16px; font-family: 'SF Mono', Menlo, monospace; letter-spacing: 0.5px; }
+    .error { color: #d32f2f; font-size: 14px; padding: 24px; background: #fef2f2; border-radius: 8px; }
+    .note { font-size: 11px; color: #aaa; margin-top: 20px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>会員QRコード</h1>
+    <p class="subtitle">会場スタッフにご提示ください</p>
+    <div id="qr-code"></div>
+    <div class="uid-label" id="uid-label"></div>
+    <p class="note">このQRコードは本人確認にご利用いただけます。他人への共有はお控えください。</p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    (function(){
+      var params = new URLSearchParams(location.search);
+      var uid = params.get('uid');
+      var labelEl = document.getElementById('uid-label');
+      var codeEl = document.getElementById('qr-code');
+      
+      if (!uid || !/^[0-9a-zA-Z_-]{1,64}$/.test(uid)) {
+        codeEl.innerHTML = '<div class="error">IDが取得できませんでした<br>Communeアプリから再度お試しください</div>';
+        return;
+      }
+      
+      new QRCode(codeEl, {
+        text: uid,
+        width: 220,
+        height: 220,
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      labelEl.textContent = 'ID: ' + uid;
+    })();
+  </script>
+</body>
+</html>
