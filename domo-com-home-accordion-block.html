@@ -1134,7 +1134,9 @@
 
       /* ==== アコーディオン（話してみませんか〜コミュニティガイド） ==== */
       .d-com__top__accordion-toggle-wrap {
-        margin: 0 -16px 3.75vw;
+        /* d-com__inner の margin:auto による中央寄せを妨げないよう、
+           左右マージンには触れず下マージンのみ指定する */
+        margin-bottom: 3.75vw;
       }
       @media screen and (max-width: 768px) {
         .d-com__top__accordion-toggle-wrap {
