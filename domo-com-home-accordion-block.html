@@ -1,0 +1,1554 @@
+<!--
+  ドモコミュ ホーム上部カスタムブロック（アコーディオン対応版）
+  - 変更点：「話してみませんか」〜「コミュニティガイド」区間（talk / loop / guide の3セクション）を
+    開閉トグルボタンでまとめ、初期状態は「閉じる」にしてフィードへのアクセスを優先。
+  - ユーザーの開閉状態は localStorage に保存し、次回訪問時も再現します。
+  - このファイルの中身をまるごとコピーして、Commune管理画面の該当カスタムHTMLブロックに貼り付けてください。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="../css/top.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+
+
+    <!-- top.cssの内容を貼り付け -->
+    <style>      
+      @charset "UTF-8";
+      /**
+        + dw.com
+        * top
+        * 20260415
+        +
+      ***/
+      @import url("https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&family=Gabarito:wght@400..900&family=Noto+Sans+JP:wght@100..900&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap");
+      .font-hind-bold {
+        font-family: "Hind", sans-serif;
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      .font-noto {
+        font-family: "Noto Sans JP", sans-serif;
+      }
+
+      .font-gabarito {
+        font-family: "Gabarito", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+      }
+
+      .font-alike {
+        font-family: "Alike Angular", serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      .font-geologica {
+        font-family: "Geologica", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
+        font-variation-settings: "slnt" 0, "CRSV" 0, "SHRP" 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: #FBFAF3;
+        color: #1B1B1B;
+        position: relative;
+        font-size: 15px;
+        line-height: 1.5;
+        padding: 0px;
+        margin: 0;
+        letter-spacing: 0rem;
+        /* ヒラギノ */
+        font-family: "Zen Kaku Gothic New", "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "メイリオ", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+        /* 游ゴシック体 */
+        font-weight: 400;
+        /* 游明朝体 */
+      }
+      @media screen and (max-width: 449px) {
+        body {
+          font-size: 3.4666666667vw;
+        }
+      }
+
+      a {
+        color: #1B1B1B;
+        text-decoration: none;
+        transition: all 0.3s;
+        letter-spacing: 0.1em;
+      }
+      a:hover {
+        color: #D3EDED;
+        opacity: 0.7;
+        text-decoration: none;
+      }
+
+      input,
+      button {
+        transition: all 0.3s;
+        opacity: 1;
+      }
+      ul,
+      ol,
+      li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      figure,
+      p {
+        margin: 0;
+        transition: all 0.3s;
+      }
+
+      p {
+        font-size: 15px;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+
+      *:focus {
+        outline: none !important;
+      }
+
+      a,
+      button {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        tap-highlight-color: rgba(0, 0, 0, 0);
+        transition: all 0.5s;
+      }
+      a:hover,
+      button:hover {
+        cursor: pointer;
+      }
+
+      .pc {
+        display: block;
+      }
+      @media screen and (max-width: 768px) {
+        .pc {
+          display: none;
+        }
+      }
+
+      .sp {
+        display: none;
+      }
+      @media screen and (max-width: 768px) {
+        .sp {
+          display: block;
+        }
+      }
+
+      article {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .text-align {
+        text-align: center;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      .align-center {
+        text-align: center;
+      }
+
+      .align-right {
+        text-align: right;
+      }
+
+      .col_gold {
+        color: #CC2936;
+      }
+
+      .col_red {
+        color: #CC2936;
+      }
+
+      .col_blue {
+        color: #D3EDED;
+      }
+
+      .bg_gray {
+        background-color: #F3F8F9 !important;
+      }
+
+      .scroll-prevent {
+        /*動き固定*/
+        position: fixed;
+        /*奥行きを管理*/
+        z-index: -1;
+        /*下2つで背景を元のサイズのまま表示することができる*/
+        width: 100%;
+        height: 100%;
+      }
+
+      .preload * {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -ms-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+      }
+
+      .d-com__container {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .d-com__inner {
+        max-width: 1140px;
+        margin: auto;
+        box-sizing: border-box;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__inner {
+          padding: 0 16px;
+          max-width: 100%;
+        }
+      }
+
+      .d-com__section {
+        width: 100%;
+        position: relative;
+        overflow: visible;
+        background: #FBFAF3;
+      }
+
+      .d-com__heading {
+        gap: 24px;
+      }
+      @media screen and (min-width: 768px) {
+        .d-com__heading {
+          padding: 48px 0;
+          gap: 48px;
+        }
+      }
+      .d-com__heading__title {
+        font-size: 28px;
+        font-weight: 700;
+      }
+      @media screen and (min-width: 768px) {
+        .d-com__heading__title {
+          font-size: 38px;
+        }
+      }
+      .d-com__heading__image {
+        line-height: 1;
+        display: block;
+        text-align: center;
+        margin: auto;
+        width: 124px;
+      }
+      @media screen and (min-width: 768px) {
+        .d-com__heading__image {
+          width: 252px;
+        }
+      }
+
+      .btn {
+        background-color: transparent;
+        border: solid 1px #1B1B1B;
+        color: #1B1B1B;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        font-size: 14px;
+        padding: 1em;
+        transition: all 0.3s;
+      }
+      .btn:hover {
+        opacity: 0.75;
+      }
+
+      .d-com__top__main {
+        margin-bottom: 30px;
+      }
+      .d-com__top__inner {
+        margin: 0 auto;
+        padding: 0 1.1111111111vw;
+        max-width: 78.75vw;
+      }
+      .d-com__top__contents {
+        margin: 0 -16px;
+      }
+      .d-com__top__contents--talk {
+        position: relative;
+        margin-bottom: 4.5833333333vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk {
+          margin-bottom: 12.9353233831vw;
+        }
+      }
+      .d-com__top__contents--talk::before {
+        content: "";
+        position: absolute;
+        top: -11.1111111111vw;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100%;
+        z-index: 30;
+        background: url("./talk_top.png") no-repeat center/cover;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk::before {
+          top: -24.8756218905vw;
+        }
+      }
+      .d-com__top__contents--talk .d-com__inner {
+        position: relative;
+        z-index: 31;
+      }
+      .d-com__top__contents--talk-head {
+        text-align: center;
+      }
+      .d-com__top__contents--talk-head p {
+        font-size: 1.3888888889vw;
+        margin-bottom: 0.3472222222vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-head p {
+          font-size: 3.9800995025vw;
+          margin-bottom: 0.7462686567vw;
+        }
+      }
+      .d-com__top__contents--talk-head h3 {
+        font-size: 3.1944444444vw;
+        font-weight: 700;
+        color: #5C3414;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-head h3 {
+          font-size: 6.9651741294vw;
+        }
+      }
+      .d-com__top__contents--talk-wrap {
+        display: flex;
+        gap: 1.875vw;
+        margin-top: 3.3333333333vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-wrap.slick-slider {
+          margin: 3.2338308458vw -16px 0;
+          padding-bottom: 78px;
+        }
+        .d-com__top__contents--talk-wrap .slick-list {
+          overflow: hidden;
+          margin: -15px -5px;
+          padding-top: 15px !important;
+          padding-bottom: 15px !important;
+        }
+        .d-com__top__contents--talk-wrap .slick-track {
+          display: flex;
+          align-items: stretch;
+        }
+        .d-com__top__contents--talk-wrap .slick-slide {
+          height: auto;
+          margin: 0 5px;
+        }
+        .d-com__top__contents--talk-wrap .slick-slide > div {
+          height: 100%;
+        }
+        .d-com__top__contents--talk-wrap .slick-prev,
+        .d-com__top__contents--talk-wrap .slick-next {
+          top: auto;
+          bottom: 0;
+          transform: none;
+          width: 40px;
+          height: 40px;
+          background: #F4A535;
+          border-radius: 50%;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .d-com__top__contents--talk-wrap .slick-prev:before,
+        .d-com__top__contents--talk-wrap .slick-next:before {
+          content: "";
+          display: inline-block;
+          width: 11px;
+          height: 18px;
+          background: url("data:image/svg+xml,%3Csvg width='11' height='18' viewBox='0 0 11 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.5 1.5L1.5 9L9.5 16.5' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;
+          opacity: 1;
+        }
+        .d-com__top__contents--talk-wrap .slick-prev {
+          left: 36px;
+        }
+        .d-com__top__contents--talk-wrap .slick-next {
+          right: 36px;
+        }
+        .d-com__top__contents--talk-wrap .slick-next:before {
+          transform: scaleX(-1);
+          margin-left: 4px;
+        }
+        .d-com__top__contents--talk-wrap .slick-dots {
+          bottom: 10px;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 0;
+          line-height: 1;
+        }
+        .d-com__top__contents--talk-wrap .slick-dots li {
+          width: auto;
+          height: auto;
+          margin: 0;
+        }
+        .d-com__top__contents--talk-wrap .slick-dots li button {
+          width: 10px;
+          height: 10px;
+          padding: 0;
+        }
+        .d-com__top__contents--talk-wrap .slick-dots li button:before {
+          content: "";
+          display: block;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #D9D9D9;
+          opacity: 1;
+          top: 0;
+          left: 0;
+        }
+        .d-com__top__contents--talk-wrap .slick-dots li.slick-active button:before {
+          background: #F4A535;
+          opacity: 1;
+        }
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card {
+          height: 100%;
+          box-sizing: border-box;
+          position: relative;
+          padding-top: 24.8756218905vw;
+        }
+      }
+      .d-com__top__contents--talk-card {
+        background: #ffffff;
+        border-radius: 1.3888888889vw;
+        flex: 1;
+        padding: 0 3.125vw 2.4305555556vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card {
+          border-radius: 4.9751243781vw;
+          padding: 6.9651741294vw 11.4427860697vw;
+        }
+      }
+      .d-com__top__contents--talk-card__img {
+        width: 100%;
+        height: 186px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        margin-bottom: 0.6944444444vw;
+        margin-top: -0.6944444444vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card__img {
+          position: absolute;
+          top: -5px;
+          right: 2.4875621891vw;
+          width: 19.9004975124vw;
+          height: auto;
+          display: block;
+          margin: 0;
+        }
+      }
+      .d-com__top__contents--talk-card__img img {
+        max-height: 100%;
+        width: auto;
+        object-fit: contain;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card__img img {
+          width: 100%;
+          height: auto;
+          max-height: unset;
+        }
+      }
+      .d-com__top__contents--talk-card:nth-child(2) .d-com__top__contents--talk-card__img {
+        height: 162px;
+      }
+      .d-com__top__contents--talk-card__title {
+        font-size: 1.7361111111vw;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 1.1805555556vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card__title {
+          font-size: 5.4726368159vw;
+          margin-bottom: 2.9850746269vw;
+        }
+      }
+      .d-com__top__contents--talk-card__text {
+        font-size: 1.1111111111vw;
+        line-height: 1.5;
+        flex: 1;
+        margin-bottom: 2.2222222222vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card__text {
+          font-size: 3.9800995025vw;
+          margin-bottom: 4.4776119403vw;
+        }
+      }
+      .d-com__top__contents--talk-card__btn {
+        display: block;
+        width: 100%;
+        padding: 14px 0;
+        background: #F4A535;
+        border-radius: 999px;
+        color: #ffffff;
+        font-size: 1.25vw;
+        font-weight: 700;
+        text-decoration: none;
+        text-align: center;
+        transition: 0.3s;
+        border: 2px solid transparent;
+      }
+      .d-com__top__contents--talk-card__btn:hover {
+        opacity: 1;
+        border: 2px solid #F4A535;
+        color: #F4A535;
+        background: #ffffff;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-card__btn {
+          font-size: 4.4776119403vw;
+        }
+      }
+      .d-com__top__contents--talk-tabs {
+        display: none;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-tabs {
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          padding: 16px 0 20px;
+          overflow: visible;
+          position: relative;
+        }
+      }
+      .d-com__top__contents--talk-tab {
+        display: none;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--talk-tab {
+          display: block;
+          position: relative;
+          border: 2px solid #F4A535;
+          border-radius: 999px;
+          background: #ffffff;
+          color: #F4A535;
+          font-size: 3.9800995025vw;
+          font-weight: 700;
+          padding: 8px 16px;
+          cursor: pointer;
+          text-align: center;
+          line-height: 1.3;
+          min-width: 28.855721393vw;
+          transition: background 0.2s, color 0.2s;
+        }
+        .d-com__top__contents--talk-tab.is-active {
+          background: #F4A535;
+          color: #ffffff;
+        }
+        .d-com__top__contents--talk-tab.is-active .d-com__top__contents--talk-tab__arrow {
+          display: block;
+        }
+        .d-com__top__contents--talk-tab .d-com__top__contents--talk-tab__arrow {
+          display: none;
+          position: absolute;
+          bottom: -13px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+      .d-com__top__contents--loop {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .d-com__top__contents--loop-list {
+        display: flex;
+        gap: 0;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: max-content;
+      }
+      .d-com__top__contents--loop-list li {
+        flex-shrink: 0;
+        height: 17.3611111111vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--loop-list li {
+          height: 34.328358209vw;
+        }
+      }
+      .d-com__top__contents--loop-list li img {
+        height: 100%;
+        width: auto;
+        display: block;
+        object-fit: cover;
+      }
+      .d-com__top__contents--loop-list.left {
+        animation: none;
+      }
+      .d-com__top__contents--loop.is-visible .d-com__top__contents--loop-list.left {
+        animation: scroll-left 50s linear infinite;
+      }
+      .d-com__top__contents--loop-list.right {
+        animation: none;
+      }
+      .d-com__top__contents--loop.is-visible .d-com__top__contents--loop-list.right {
+        animation: scroll-right 50s linear infinite;
+      }
+      .d-com__top__contents--guide {
+        position: relative;
+        overflow: hidden;
+        padding: 0 1.1111111111vw 16.6666666667vw;
+        margin-top: 3.2638888889vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide {
+          margin-top: 6.7164179104vw;
+          padding: 0 3.9800995025vw 17.4129353234vw;
+        }
+      }
+      .d-com__top__contents--guide::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 21.875vw;
+        background: url("./guide_btm.png") no-repeat bottom center/cover;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide::after {
+          height: 18.6567164179vw;
+          background: url("./guide_btm_sp.png") no-repeat bottom center/cover;
+        }
+      }
+      .d-com__top__contents--guide-flex {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        max-width: 77.7083333333vw;
+        width: 100%;
+        margin: 0 auto;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide-flex {
+          display: block;
+          margin: auto 4.9751243781vw;
+          max-width: 90.0497512438vw;
+        }
+      }
+      .d-com__top__contents--guide-txt {
+        flex-shrink: 0;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide-txt {
+          text-align: center;
+          margin-bottom: 6.2189054726vw;
+        }
+      }
+      .d-com__top__contents--guide-txt h3 {
+        font-size: 3.1944444444vw;
+        font-weight: 700;
+        color: #5C3414;
+        margin-bottom: 10px;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide-txt h3 {
+          font-size: 6.9651741294vw;
+        }
+      }
+      .d-com__top__contents--guide-txt p {
+        font-size: 1.3888888889vw;
+        line-height: 1.8;
+        text-align: center;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide-txt p {
+          font-size: 4.4776119403vw;
+        }
+      }
+      .d-com__top__contents--guide-card {
+        display: flex;
+        gap: 1.4583333333vw;
+        position: relative;
+        z-index: 2;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide-card {
+          gap: 3.9800995025vw;
+        }
+      }
+      .d-com__top__contents--guide-card > * {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .d-com__top__contents--guide .d-com__top__guide-card {
+        border-radius: 16px;
+        overflow: hidden;
+        display: block;
+        transition: 0.3s;
+        border-radius: 1.5277777778vw;
+        width: 13.6805555556vw;
+        background: #ffffff;
+        margin-top: 2px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__contents--guide .d-com__top__guide-card {
+          border-radius: 2.4875621891vw;
+          width: 27.3631840796vw;
+        }
+      }
+      .d-com__top__contents--guide .d-com__top__guide-card:hover {
+        box-shadow: 0 0 0 2px #F4A535;
+        opacity: 1;
+        background: #FBFAF3;
+      }
+      .d-com__top__contents--guide .d-com__top__guide-card img {
+        width: 100%;
+        height: auto;
+      }
+
+      @keyframes scroll-left {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes scroll-right {
+        0% {
+          transform: translateX(-50%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+      .d-com__top__main__mv {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        max-width: 100vw;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+      .d-com__top__main__mv.is-visible {
+        opacity: 1;
+      }
+      .d-com__top__main__mv picture {
+        display: block;
+        overflow: hidden;
+        max-width: 100%;
+      }
+
+      .mv-layer {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .mv-layer01 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 1;
+      }
+
+      .mv-crowd-wrap {
+        position: absolute;
+        top: 2%;
+        left: 0;
+        display: flex;
+        gap: 6vw;
+        z-index: 2;
+        animation: mv-crowd-scroll 24s linear infinite;
+      }
+      .mv-crowd-wrap img {
+        width: 55vw;
+        height: auto;
+        flex-shrink: 0;
+        display: block;
+      }
+
+      .mv-layer02 {
+        position: relative;
+        z-index: 3;
+      }
+
+      .mv-nav {
+        position: absolute;
+        display: block;
+        z-index: 7;
+        opacity: 0;
+        transform: scale(0.7);
+      }
+      .mv-nav.is-visible {
+        animation: mv-nav-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+      .mv-nav:hover {
+        opacity: 1;
+      }
+      .mv-nav img {
+        display: block;
+        height: 46px;
+        width: auto;
+        transition: transform 0.2s ease;
+      }
+      .mv-nav:hover img {
+        transform: scale(1.2);
+      }
+      .mv-nav--hiroba {
+        top: 25%;
+        left: 19%;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-nav--hiroba {
+          top: 12%;
+          left: 4%;
+        }
+      }
+      .mv-nav--domokatsu {
+        top: 36%;
+        left: 50%;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-nav--domokatsu {
+          top: 17%;
+          left: 64%;
+        }
+      }
+      .mv-nav--oshirase {
+        top: 19%;
+        right: 16%;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-nav--oshirase {
+          top: unset;
+          right: unset;
+          left: 3%;
+          bottom: 45%;
+        }
+      }
+      .mv-nav--event {
+        top: 40%;
+        right: 13%;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-nav--event {
+          top: 44%;
+          right: 35%;
+        }
+      }
+      .mv-nav--oyakusoku {
+        top: 64%;
+        left: 54%;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-nav--oyakusoku {
+          top: unset;
+          left: unset;
+          right: 3%;
+          bottom: 34%;
+        }
+      }
+
+      .mv-balloon {
+        position: absolute;
+        bottom: 17.3611111111vw;
+        right: 0vw;
+        width: 6.9444444444vw;
+        z-index: 4;
+        animation: mv-balloon-float 7s ease-in-out infinite;
+        transform-origin: bottom center;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-balloon {
+          width: 7%;
+          bottom: 33%;
+          right: unset;
+          left: 26%;
+        }
+      }
+
+      .mv-bird {
+        position: absolute;
+        top: 20%;
+        right: 14%;
+        width: 15%;
+        z-index: 5;
+        opacity: 0;
+        transform: translateX(60vw) translateY(-40vh) scaleX(-1) rotate(20deg);
+      }
+      .mv-bird.is-active {
+        animation: mv-bird-in-pc 2s linear forwards;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-bird {
+          top: unset;
+          left: 5%;
+          bottom: 40%;
+          width: 22%;
+          transform: translateX(calc(-100vw - 100%));
+        }
+        .mv-bird.is-active {
+          animation: mv-bird-in 1s ease-out forwards;
+        }
+      }
+
+      .mv-texture {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 6;
+        mix-blend-mode: hard-light;
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      @keyframes mv-crowd-scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-61vw);
+        }
+      }
+      @keyframes mv-balloon-float {
+        0% {
+          transform: rotate(-7deg);
+        }
+        50% {
+          transform: rotate(7deg);
+        }
+        100% {
+          transform: rotate(-7deg);
+        }
+      }
+      @keyframes mv-bird-in-pc {
+        from {
+          transform: translateX(60vw) translateY(-40vh) scaleX(-1) rotate(20deg);
+          opacity: 0;
+        }
+        12% {
+          opacity: 1;
+        }
+        to {
+          transform: translateX(0) translateY(0) scaleX(-1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+      @keyframes mv-bird-in {
+        from {
+          transform: translateX(calc(-100vw - 100%));
+          opacity: 0;
+        }
+        15% {
+          opacity: 1;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes mv-nav-pop {
+        0% {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes mv-cta-fadein {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes mv-cta-fadein-sp {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      .mv-cta {
+        position: absolute;
+        bottom: 10.4166666667vw;
+        right: 13.8888888889vw;
+        opacity: 0;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-cta {
+          right: auto;
+          bottom: 17.4129353234vw;
+          left: 13%;
+          transform: translateX(-50%);
+        }
+        .mv-cta.is-visible {
+          animation-name: mv-cta-fadein-sp;
+        }
+      }
+      .mv-cta.is-visible {
+        animation: mv-cta-fadein 0.8s ease forwards;
+      }
+      .mv-cta {
+        z-index: 8;
+        text-align: center;
+      }
+      .mv-cta__logo {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 200px;
+        margin: 0 auto 8px;
+      }
+      .mv-cta__text {
+        font-family: "游明朝体 36ポかな", "YuMincho +36p Kana", YuMincho, "游明朝体", "Yu Mincho", serif;
+        font-size: 1.3888888889vw;
+        margin-bottom: 2.0833333333vw;
+        white-space: nowrap;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-cta__text {
+          font-size: 4.9751243781vw;
+          margin-bottom: 6.9651741294vw;
+        }
+      }
+      .mv-cta__btn {
+        display: inline-block;
+        background: #B0895E;
+        color: #ffffff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.6944444444vw 1.7361111111vw;
+        font-size: 1.1111111111vw;
+        font-family: inherit;
+        cursor: pointer;
+        transition: 0.3s;
+        line-height: 1;
+      }
+      .mv-cta__btn:hover {
+        opacity: 1;
+        background: #5C3414;
+      }
+      @media screen and (max-width: 768px) {
+        .mv-cta__btn {
+          font-size: 3.9800995025vw;
+          padding: 10px 22px;
+          padding: 2.4875621891vw 3.2338308458vw;
+        }
+      }
+      .mv-cta__btn__arrow {
+        display: inline-block;
+        font-size: 0.75em;
+        padding: 1px 3px;
+        vertical-align: bottom;
+      }
+
+      .d-com__top__contents--talk,
+      .d-com__top__contents--loop,
+      .d-com__top__contents--guide {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .d-com__top__contents--talk.is-visible,
+      .d-com__top__contents--loop.is-visible,
+      .d-com__top__contents--guide.is-visible {
+        opacity: 1;
+      }
+
+      #feed-anchor {
+        height: 30px !important;
+        width: 100%;
+        display: block;
+      }/*# sourceMappingURL=top.css.map */
+
+      /* ==== アコーディオン（話してみませんか〜コミュニティガイド） ==== */
+      .d-com__top__accordion-toggle-wrap {
+        margin: 0 -16px 3.75vw;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__accordion-toggle-wrap {
+          margin-bottom: 6.2189054726vw;
+        }
+      }
+      .d-com__top__accordion-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        max-width: 45.8333333333vw;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 2px solid #F4A535;
+        border-radius: 999px;
+        padding: 0.9722222222vw 1.3888888889vw;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.25s, opacity 0.25s;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__accordion-toggle {
+          max-width: 90.0497512438vw;
+          padding: 3.4825870647vw 4.9751243781vw;
+        }
+      }
+      .d-com__top__accordion-toggle:hover {
+        opacity: 0.75;
+      }
+      .d-com__top__accordion-toggle__text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.4;
+      }
+      .d-com__top__accordion-toggle__eyebrow {
+        font-size: 0.9722222222vw;
+        color: #5C3414;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__accordion-toggle__eyebrow {
+          font-size: 3.2338308458vw;
+        }
+      }
+      .d-com__top__accordion-toggle__label {
+        font-size: 1.25vw;
+        font-weight: 700;
+        color: #5C3414;
+      }
+      @media screen and (max-width: 768px) {
+        .d-com__top__accordion-toggle__label {
+          font-size: 4.2288557214vw;
+        }
+      }
+      .d-com__top__accordion-toggle__icon {
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+      }
+      .d-com__top__accordion-toggle[aria-expanded="true"] .d-com__top__accordion-toggle__icon {
+        transform: rotate(180deg);
+      }
+      .d-com__top__accordion-panel {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.45s ease;
+      }
+    </style>
+    <!-- /top.cssの内容を貼り付け -->
+</head>
+
+<body class="_scroll-prevent _preload">
+    <div class="d-com__container">
+        <section class="d-com__section d-com__top">     
+          <div class="d-com__container">
+            <section class="d-com__section d-com__top">
+                <main class="d-com__top__main">
+                    <div class="d-com__top__main__mv">                        
+                        <img class="mv-layer mv-layer01" src="./mv_layer01.jpg" alt="">                        
+                        <div class="mv-crowd-wrap">
+                            <img src="./mv_crowd.png" alt="">
+                            <img src="./mv_crowd.png" alt="" aria-hidden="true">
+                            <img src="./mv_crowd.png" alt="" aria-hidden="true">
+                        </div>                        
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="./mv_layer02_sp.png">
+                            <img class="mv-layer mv-layer02" src="./mv_layer02.png" alt="">
+                        </picture>                        
+                        <a href="https://domo-com.commmune.com/view/box?boxId=wbdtGcRxR&categoryIndex=99" target="_parent" class="mv-nav mv-nav--hiroba"><img src="./mv_hiroba.png" alt="養生ひろば"></a>
+                        <a href="https://domo-com.commmune.com/view/box?boxId=VwyjR7ewO&categoryIndex=99" target="_parent" class="mv-nav mv-nav--domokatsu"><img src="./mv_domokatsu.png" alt="ドモ活"></a>
+                        <a href="https://domo-com.commmune.com/view/box?boxId=r1eUQCkLV&categoryIndex=99" target="_parent" class="mv-nav mv-nav--oshirase"><img src="./mv_oshirase.png" alt="お知らせ便"></a>
+                        <a href="https://domo-com.commmune.com/view/box?boxId=talk003&categoryIndex=99" target="_parent" class="mv-nav mv-nav--event"><img src="./mv_event.png" alt="イベント"></a>
+                        <a href="https://domo-com.commmune.com/view/box?boxId=TYUBZEBQv&categoryIndex=99" target="_parent" class="mv-nav mv-nav--oyakusoku"><img src="./mv_oyakusoku.png" alt="お約束"></a>                        
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="./mv_balloon_sp.png">
+                            <img class="mv-layer mv-balloon" src="./mv_balloon.png" alt="">
+                        </picture>                        
+                        <img class="mv-layer mv-bird" src="./mv_bird.png" alt="">                       
+                        <img class="mv-layer mv-texture" src="./mv_texture.jpg" alt="">                        
+                        <div class="mv-cta">
+                            <img src="./mv_logo.png" alt="Domohorn Wrinkle Fan Community" class="mv-cta__logo">
+                            <p class="mv-cta__text">「明日が楽しみ」と思える毎日を</p>                            
+                        </div>
+                    </div>
+                </main>
+            </section>
+          </div>
+          <div class="d-com__top__accordion-toggle-wrap d-com__inner">
+              <button type="button" id="js-accordion-toggle" class="d-com__top__accordion-toggle" aria-expanded="false" aria-controls="js-accordion-panel">
+                  <span class="d-com__top__accordion-toggle__text">
+                      <span class="d-com__top__accordion-toggle__eyebrow">あんなことこんなこと、ドモコミュのみんなに</span>
+                      <span class="d-com__top__accordion-toggle__label" id="js-accordion-toggle-label">話してみませんか？コミュニティガイドを見る</span>
+                  </span>
+                  <svg class="d-com__top__accordion-toggle__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke="#F4A535" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+          </div>
+          <div id="js-accordion-panel" class="d-com__top__accordion-panel">
+          <div class="d-com__top__contents d-com__top__contents--talk">
+              <div class="d-com__inner">
+                  <div class="d-com__top__contents--talk-head">
+                      <p>あんなことこんなこと、<br class="sp">ドモコミュのみんなに</p>
+                      <h3>話してみませんか</h3>
+                  </div>
+                  <div class="d-com__top__contents--talk-tabs">
+                      <button class="d-com__top__contents--talk-tab is-active" data-index="0">ちょっと<br>聞きたい<svg class="d-com__top__contents--talk-tab__arrow" width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.93127 12C8.16147 13.3333 6.23697 13.3333 5.46717 12L0.271017 3C-0.498784 1.66667 0.463466 4.44263e-07 2.00307 5.78859e-07L12.3954 1.48738e-06C13.935 1.62198e-06 14.8972 1.66667 14.1274 3L8.93127 12Z" fill="#F4A535"/></svg></button>
+                      <button class="d-com__top__contents--talk-tab" data-index="1">わたしの<br>ドモ愛<svg class="d-com__top__contents--talk-tab__arrow" width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.93127 12C8.16147 13.3333 6.23697 13.3333 5.46717 12L0.271017 3C-0.498784 1.66667 0.463466 4.44263e-07 2.00307 5.78859e-07L12.3954 1.48738e-06C13.935 1.62198e-06 14.8972 1.66667 14.1274 3L8.93127 12Z" fill="#F4A535"/></svg></button>
+                      <button class="d-com__top__contents--talk-tab" data-index="2">ファン<br>フェスタ<svg class="d-com__top__contents--talk-tab__arrow" width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.93127 12C8.16147 13.3333 6.23697 13.3333 5.46717 12L0.271017 3C-0.498784 1.66667 0.463466 4.44263e-07 2.00307 5.78859e-07L12.3954 1.48738e-06C13.935 1.62198e-06 14.8972 1.66667 14.1274 3L8.93127 12Z" fill="#F4A535"/></svg></button>
+                  </div>
+                  <div class="d-com__top__contents--talk-wrap">
+                      <div class="d-com__top__contents--talk-card">
+                          <div class="d-com__top__contents--talk-card__img">
+                          <img src="./talk_img01.png" alt="">
+                          </div>
+                          <h4 class="d-com__top__contents--talk-card__title">みんなで話そう<br>見つけよう</h4>
+                          <p class="d-com__top__contents--talk-card__text">気になることがあれば、<br>ここで聞いてみませんか？<br>みんなの工夫や、<br>ちょっとした疑問も。</p>
+                          <a href="https://domo-com.commmune.com/view/box?boxId=VwyjR7ewO&categoryIndex=4" target="_parent" class="d-com__top__contents--talk-card__btn">相談する / 相談に答える</a>
+                      </div>
+                      <div class="d-com__top__contents--talk-card">
+                          <div class="d-com__top__contents--talk-card__img">
+                          <img src="./talk_img02.png" alt="">
+                          </div>
+                          <h4 class="d-com__top__contents--talk-card__title">好きな気持ちを<br>分かち合おう</h4>
+                          <p class="d-com__top__contents--talk-card__text">ドモの好きなところや、<br>使って感じたことを<br>みんなで語り合いませんか？<br>あなたの想いを聞かせてください</p>
+                          <a href="https://domo-com.commmune.com/view/box?boxId=VwyjR7ewO&categoryIndex=0" target="_parent" class="d-com__top__contents--talk-card__btn">ドモ愛を投稿する</a>
+                      </div>
+                      <div class="d-com__top__contents--talk-card">
+                          <div class="d-com__top__contents--talk-card__img">
+                          <img src="./talk_img03.png" alt="">
+                          </div>
+                          <h4 class="d-com__top__contents--talk-card__title">ファンフェスタ<br>最新情報</h4>
+                          <p class="d-com__top__contents--talk-card__text">10月24日に開催する<br>「ファンフェスタ2026」の<br>最新情報を<br>いち早くお知らせ。</p>
+                          <a href="https://domo-com.commmune.com/view/box?boxId=talk003&categoryIndex=6" target="_parent" class="d-com__top__contents--talk-card__btn">最新情報を見る</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+            <div class="d-com__top__contents d-com__top__contents--loop">
+              <ul class="d-com__top__contents--loop-list left">
+                  <li><img src="./loop_img01.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img02.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img03.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img04.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img05.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img06.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img07.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img08.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img09.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img01.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img02.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img03.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img04.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img05.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img06.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img07.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img08.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img09.jpg" alt="" decoding="async"></li>
+              </ul>
+              <ul class="d-com__top__contents--loop-list right">
+                  <li><img src="./loop_img10.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img11.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img12.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img13.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img14.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img15.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img16.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img17.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img18.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img10.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img11.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img12.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img13.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img14.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img15.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img16.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img17.jpg" alt="" decoding="async"></li>
+                  <li><img src="./loop_img18.jpg" alt="" decoding="async"></li>
+              </ul>
+            </div>
+          <div class="d-com__top__contents d-com__top__contents--guide">
+              <div class="d-com__top__contents--guide-flex">
+                  <div class="d-com__top__contents--guide-txt">
+                      <h3>コミュニティガイド</h3>
+                      <p>
+                          コミュニティ内の<br>
+                          主なコンテンツをまとめています
+                      </p>
+                  </div>
+                  <div class="d-com__top__contents--guide-card">
+                      <a href="https://domo-com.commmune.com/view/post/0/769405?tab=new&recommendPosition=1" target="_parent" class="d-com__top__guide-card">                        
+                          <img src="./guide_card01.png" alt="まずはここから" class="pc">                        
+                          <img src="./guide_card01_sp.png" alt="まずはここから" class="sp">                        
+                      </a>                    
+                      <a href="https://domo-com.commmune.com/view/post/0/1551613" target="_parent" class="d-com__top__guide-card">                        
+                          <img src="./guide_card02.png" alt="ドモコミュポイント" class="pc">                        
+                          <img src="./guide_card02_sp.png" alt="ドモコミュポイント" class="sp">                     
+                      </a>                    
+                      <a href="https://domo-com.commmune.com/view/box?boxId=TYUBZEBQv&categoryIndex=1" target="_parent" class="d-com__top__guide-card">                        
+                          <img src="./guide_card03.png" alt="主なトークルーム" class="pc">                        
+                          <img src="./guide_card03_sp.png" alt="主なトークルーム" class="sp">                     
+                      </a>                    
+                  </div>
+              </div>
+          </div>
+          </div>
+          <div id="feed-anchor"></div>
+        </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script>
+        var $talkWrap = $('.d-com__top__contents--talk-wrap');
+
+        function initSlick() {
+            if ($(window).width() <= 768) {
+                if (!$talkWrap.hasClass('slick-initialized')) {
+                    $talkWrap.slick({
+                        slidesToShow: 1,
+                        centerMode: true,
+                        centerPadding: '40px',
+                        infinite: true,
+                        dots: true,
+                        arrows: true,
+                        prevArrow: '<button type="button" class="slick-prev"></button>',
+                        nextArrow: '<button type="button" class="slick-next"></button>',
+                    });
+                }
+            } else {
+                if ($talkWrap.hasClass('slick-initialized')) {
+                    $talkWrap.slick('unslick');
+                }
+            }
+        }
+
+        $(function() {
+            initSlick();
+            $(window).on('resize', initSlick);
+        });
+
+        // 吹き出しタブ ↔ スライダー連動
+        var $tabs = $('.d-com__top__contents--talk-tab');
+
+        // タブクリック → 対応スライドへ移動
+        $tabs.on('click', function() {
+            var idx = $(this).data('index');
+            if ($talkWrap.hasClass('slick-initialized')) {
+                $talkWrap.slick('slickGoTo', idx);
+            }
+        });
+
+        // スライド変化 → タブのアクティブ切り替え
+        $talkWrap.on('afterChange', function(e, slick, currentSlide) {
+            $tabs.removeClass('is-active');
+            $tabs.eq(currentSlide).addClass('is-active');
+        });
+    </script>
+    <script>
+        document.querySelector('.mv-cta__btn').addEventListener('click', function() {
+            document.getElementById('feed-anchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    </script>
+    <!-- 固定必須 ※本番時ドメイン変更-->
+    <script>
+        window.onload = function () {
+            // 1. MV全体ふわっと
+            document.querySelector('.d-com__top__main__mv').classList.add('is-visible');
+
+            // 1.5. MV完了後にコンテンツ表示
+            setTimeout(function() {
+                document.querySelectorAll('.d-com__top__contents--talk, .d-com__top__contents--loop, .d-com__top__contents--guide').forEach(function(el) {
+                    el.classList.add('is-visible');
+                });
+            }, 850);
+
+            // 2. ロゴ（CTA）：最初から超薄いフェード
+            document.querySelector('.mv-cta').classList.add('is-visible');
+
+            // 3. ナビ5つ：早めにポンポン表示
+            ['hiroba', 'domokatsu', 'oshirase', 'event', 'oyakusoku'].forEach(function(name, i) {
+                setTimeout(function() {
+                    document.querySelector('.mv-nav--' + name).classList.add('is-visible');
+                }, 600 + i * 150);
+            });
+
+            // 4. 鳥：ナビ最後（oyakusoku）が出切ったタイミング（1200ms start + 400ms animation）
+            setTimeout(function() {
+                document.querySelector('.mv-bird').classList.add('is-active');
+            }, 780);
+
+            reportHeightToParent();
+        }
+
+        window.onresize = function () {
+            reportHeightToParent();
+        }
+
+        function reportHeightToParent() {
+            const height = document.getElementsByTagName('body')[0].scrollHeight;
+            window.parent.postMessage({ type: 'setHeight', value: height }, 'https://domo-com.commmune.com');
+        }
+    </script>
+    <!-- アコーディオン（話してみませんか〜コミュニティガイド） -->
+    <script>
+        (function () {
+            var STORAGE_KEY = 'domocomu-top-accordion-open';
+            var toggleBtn = document.getElementById('js-accordion-toggle');
+            var panel = document.getElementById('js-accordion-panel');
+            var label = document.getElementById('js-accordion-toggle-label');
+            var LABEL_CLOSED = '話してみませんか？コミュニティガイドを見る';
+            var LABEL_OPEN = '閉じる';
+            var isOpen = false;
+
+            function openPanel() {
+                isOpen = true;
+                panel.style.maxHeight = panel.scrollHeight + 'px';
+                toggleBtn.setAttribute('aria-expanded', 'true');
+                label.textContent = LABEL_OPEN;
+            }
+
+            function closePanel() {
+                isOpen = false;
+                // 現在の高さを明示してから0に落とすことでtransitionを効かせる
+                panel.style.maxHeight = panel.scrollHeight + 'px';
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        panel.style.maxHeight = '0px';
+                    });
+                });
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                label.textContent = LABEL_CLOSED;
+            }
+
+            function savePreference() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+                } catch (e) {
+                    // localStorageが使えない環境では単に保存しない
+                }
+            }
+
+            toggleBtn.addEventListener('click', function () {
+                if (isOpen) {
+                    closePanel();
+                } else {
+                    openPanel();
+                }
+                savePreference();
+                setTimeout(reportHeightToParent, 500);
+            });
+
+            panel.addEventListener('transitionend', function (e) {
+                if (e.propertyName !== 'max-height') return;
+                // 開いた状態でスライダーの高さ変化等に追従できるよう上限を解放
+                if (isOpen) {
+                    panel.style.maxHeight = 'none';
+                }
+                reportHeightToParent();
+            });
+
+            window.addEventListener('resize', function () {
+                if (isOpen && panel.style.maxHeight !== 'none') {
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+
+            function setInitialState(open) {
+                // 初期表示ではtransitionを無効化し、開閉アニメーションが
+                // ページロード時にちらつかないようにする
+                panel.style.transition = 'none';
+                if (open) {
+                    isOpen = true;
+                    panel.style.maxHeight = 'none';
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                    label.textContent = LABEL_OPEN;
+                } else {
+                    isOpen = false;
+                    panel.style.maxHeight = '0px';
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                    label.textContent = LABEL_CLOSED;
+                }
+                void panel.offsetHeight; // reflow
+                panel.style.transition = '';
+            }
+
+            var savedPreference = null;
+            try {
+                savedPreference = localStorage.getItem(STORAGE_KEY);
+            } catch (e) {
+                // no-op
+            }
+
+            setInitialState(savedPreference === '1');
+        })();
+    </script>
+</body>
+
+</html>
